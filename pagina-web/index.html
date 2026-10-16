@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaDaTec - Hardware y Accesorios para Computadoras</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        custom: {
+                            bg: '#131313',      /* Deep background */
+                            card: '#2B2B2B',    /* Surface / Card background */
+                            subtle: '#1f1f1f',  /* Darker subtle variant */
+                            muted: '#86868B',   /* Muted text and borders */
+                            accent: '#1561F0',  /* Electric blue accent */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-custom-bg text-white font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-custom-accent selection:text-white">
+ 
+    <!-- HEADER NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-[#131313]/95 backdrop-blur-md border-b border-[#86868B]/30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('store')">
+                <div class="w-10 h-10 rounded-xl bg-custom-card text-white border border-[#86868B]/30 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-laptop text-sm text-custom-accent"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold tracking-tight text-white">MaDaTech</span>
+                    <p class="text-[10px] text-custom-muted tracking-wider uppercase font-medium">Hardware & Accesorios</p>
+                </div>
+            </div>
+ 
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-custom-muted">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="headerSearch" oninput="handleSearch(this.value)" placeholder="Buscar RAM, procesadores, accesorios..." class="w-full pl-10 pr-4 py-2.5 bg-custom-card border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent transition-all placeholder:text-custom-muted shadow-xs">
+                </div>
+            </div>
+ 
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="switchView('store')" class="hidden sm:inline-flex text-xs font-semibold text-custom-muted hover:text-white px-3 py-2 rounded-lg transition-colors">TIENDA</button>
+                <button onclick="switchView('valueProp')" class="hidden sm:inline-flex text-xs font-semibold text-custom-muted hover:text-white px-3 py-2 rounded-lg transition-colors">MODELO DE NEGOCIO</button>
+                
+                <button onclick="toggleCartModal(true)" class="relative p-2.5 rounded-xl bg-custom-card hover:bg-custom-subtle text-white transition-all flex items-center justify-center border border-[#86868B]/30 shadow-xs">
+                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-custom-accent text-white border border-[#131313] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">0</span>
+                </button>
+ 
+                <button onclick="openAuthModal()" class="flex items-center gap-2 bg-custom-card hover:bg-custom-subtle text-white border border-[#86868B]/30 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xs transition-all">
+                    <i class="fa-regular fa-user"></i>
+                    <span class="hidden sm:inline" id="userAccountBtnText">CUENTA</span>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-custom-muted">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" oninput="handleSearch(this.value)" placeholder="Buscar componentes o accesorios..." class="w-full pl-10 pr-4 py-2 bg-custom-card border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent shadow-xs">
+            </div>
+        </div>
+    </header>
+ 
+    <main class="flex-grow">
+        <!-- VIEW: STORE & LANDING -->
+        <div id="storeView" class="space-y-12 pb-16">
+            <section class="bg-custom-bg py-16 lg:py-20 border-b border-[#86868B]/20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-custom-card text-custom-muted border border-[#86868B]/30 shadow-xs">
+                            <i class="fa-solid fa-circle-check text-xs text-custom-accent"></i> Centralizado y accesible
+                        </span>
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-white">
+                            Todo para tu computadora en un solo lugar.
+                        </h1>
+                        <p class="text-custom-muted max-w-lg text-sm sm:text-base leading-relaxed">
+                            Simplificamos la búsqueda y adquisición de componentes, repuestos y accesorios de computación con una experiencia limpia, uniforme y organizada.
+                        </p>
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <button onclick="scrollToCatalog()" class="bg-custom-accent hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow-xs transition-all flex items-center gap-2 text-xs">
+                                <i class="fa-solid fa-store"></i> EXPLORAR CATÁLOGO
+                            </button>
+                            <button onclick="switchView('valueProp')" class="bg-custom-card hover:bg-custom-subtle text-white font-semibold px-6 py-3 rounded-xl border border-[#86868B]/30 transition-all text-xs shadow-xs">
+                                CONOCE EL PROYECTO
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-custom-card border border-[#86868B]/30 p-6 rounded-2xl flex flex-col justify-between shadow-xs hover:border-custom-accent transition-all">
+                            <div class="w-10 h-10 rounded-xl bg-custom-subtle text-custom-accent flex items-center justify-center mb-4 text-base shadow-xs border border-[#86868B]/30">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-xs">Componentes y Repuestos</h3>
+                                <p class="text-[11px] text-custom-muted mt-1">Memorias RAM, SSDs, procesadores y fuentes de poder.</p>
+                            </div>
+                        </div>
+                        <div class="bg-custom-card border border-[#86868B]/30 p-6 rounded-2xl flex flex-col justify-between shadow-xs hover:border-custom-accent transition-all mt-6">
+                            <div class="w-10 h-10 rounded-xl bg-custom-subtle text-custom-accent flex items-center justify-center mb-4 text-base shadow-xs border border-[#86868B]/30">
+                                <i class="fa-solid fa-headphones"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-xs">Accesorios y Periféricos</h3>
+                                <p class="text-[11px] text-custom-muted mt-1">Teclados, mouse ergonómicos, fundas y cables.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+ 
+            <section id="catalogSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <span class="text-custom-muted text-xs uppercase tracking-wider font-semibold">CATÁLOGO EN LÍNEA</span>
+                        <h2 class="text-2xl font-bold text-white mt-1">Productos recomendados</h2>
+                    </div>
+                    <div id="categoryFilters" class="flex flex-wrap gap-2">
+                        <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-custom-accent text-white border border-custom-accent shadow-xs transition-all">TODOS</button>
+                        <button onclick="filterCategory('Componentes')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-custom-card text-custom-muted hover:text-white border border-[#86868B]/30 transition-all shadow-xs">COMPONENTES</button>
+                        <button onclick="filterCategory('Repuestos')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-custom-card text-custom-muted hover:text-white border border-[#86868B]/30 transition-all shadow-xs">REPUESTOS</button>
+                        <button onclick="filterCategory('Accesorios')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-custom-card text-custom-muted hover:text-white border border-[#86868B]/30 transition-all shadow-xs">ACCESORIOS</button>
+                        <button onclick="filterCategory('Periféricos')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-custom-card text-custom-muted hover:text-white border border-[#86868B]/30 transition-all shadow-xs">PERIFÉRICOS</button>
+                    </div>
+                </div>
+ 
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+ 
+                <div id="emptyState" class="hidden text-center py-16 bg-custom-card rounded-2xl border border-[#86868B]/30 shadow-xs mt-4">
+                    <div class="w-12 h-12 bg-custom-subtle text-custom-muted rounded-full flex items-center justify-center mx-auto mb-3 text-lg border border-[#86868B]/30">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-white">No se encontraron productos</h3>
+                    <p class="text-xs text-custom-muted mt-1">Intenta ajustando tu búsqueda o cambiando de categoría.</p>
+                    <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-custom-accent text-white text-xs font-semibold rounded-xl border border-custom-accent">VER TODOS</button>
+                </div>
+            </section>
+        </div>
+ 
+        <!-- VIEW: VALUE PROP -->
+        <div id="valuePropView" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+            <div class="text-center space-y-3">
+                <span class="text-custom-muted text-xs uppercase tracking-wider font-semibold">MODELO DE NEGOCIO E-COMMERCE</span>
+                <h1 class="text-3xl font-bold text-white">¿Cómo funciona MaDaTec?</h1>
+                <p class="text-custom-muted max-w-xl mx-auto text-sm">Resumen estructurado de nuestra propuesta de valor orientada a resolver la dispersión de componentes informáticos.</p>
+            </div>
+ 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-custom-card p-6 rounded-2xl border border-[#86868B]/30 shadow-xs space-y-3">
+                    <div class="w-10 h-10 bg-custom-subtle text-custom-accent rounded-xl flex items-center justify-center text-sm font-bold border border-[#86868B]/30"><i class="fa-solid fa-star"></i></div>
+                    <h3 class="font-bold text-white text-sm">1. Propuesta de Valor</h3>
+                    <p class="text-custom-muted text-xs leading-relaxed">Centraliza componentes, repuestos y accesorios para computadoras en un solo lugar.</p>
+                </div>
+                <div class="bg-custom-card p-6 rounded-2xl border border-[#86868B]/30 shadow-xs space-y-3">
+                    <div class="w-10 h-10 bg-custom-subtle text-custom-accent rounded-xl flex items-center justify-center text-sm font-bold border border-[#86868B]/30"><i class="fa-solid fa-users"></i></div>
+                    <h3 class="font-bold text-white text-sm">2. Mercado Meta</h3>
+                    <p class="text-custom-muted text-xs leading-relaxed">Estudiantes, profesionales y público general que necesitan actualizar o reparar equipos.</p>
+                </div>
+                <div class="bg-custom-card p-6 rounded-2xl border border-[#86868B]/30 shadow-xs space-y-3">
+                    <div class="w-10 h-10 bg-custom-subtle text-custom-accent rounded-xl flex items-center justify-center text-sm font-bold border border-[#86868B]/30"><i class="fa-solid fa-laptop"></i></div>
+                    <h3 class="font-bold text-white text-sm">3. Canal Principal</h3>
+                    <p class="text-custom-muted text-xs leading-relaxed">Plataforma web de comercio electrónico con búsqueda avanzada y carrito.</p>
+                </div>
+                <div class="bg-custom-card p-6 rounded-2xl border border-[#86868B]/30 shadow-xs space-y-3">
+                    <div class="w-10 h-10 bg-custom-subtle text-custom-accent rounded-xl flex items-center justify-center text-sm font-bold border border-[#86868B]/30"><i class="fa-solid fa-wallet"></i></div>
+                    <h3 class="font-bold text-white text-sm">4. Fuente de Ingresos</h3>
+                    <p class="text-custom-muted text-xs leading-relaxed">Venta directa en línea de componentes y accesorios cotidianos.</p>
+                </div>
+            </div>
+ 
+            <div class="text-center pt-2">
+                <button onclick="switchView('store')" class="bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold px-8 py-3 rounded-xl shadow-xs transition-all text-xs">VOLVER A LA TIENDA</button>
+            </div>
+        </div>
+ 
+        <!-- VIEW: PRODUCT DETAIL -->
+        <div id="detailView" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <button onclick="switchView('store')" class="inline-flex items-center gap-2 text-xs font-semibold text-custom-muted hover:text-white mb-6 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Volver al catálogo
+            </button>
+            <div id="productDetailContent" class="bg-custom-card rounded-3xl border border-[#86868B]/30 shadow-xs p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
+        </div>
+    </main>
+ 
+    <!-- CART MODAL -->
+    <div id="cartModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs hidden flex justify-end transition-all">
+        <div class="w-full max-w-md bg-custom-card border-l border-[#86868B]/30 h-full shadow-2xl flex flex-col justify-between">
+            <div class="p-6 border-b border-[#86868B]/30 flex items-center justify-between bg-custom-bg">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-cart-shopping text-white text-base"></i>
+                    <h2 class="text-sm font-bold text-white">Carrito de Compras</h2>
+                </div>
+                <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-xl bg-custom-card border border-[#86868B]/30 text-custom-muted hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div id="cartItemsList" class="flex-grow overflow-y-auto p-6 space-y-4 divide-y divide-[#86868B]/20"></div>
+            <div class="p-6 border-t border-[#86868B]/30 bg-custom-bg space-y-4">
+                <div class="flex justify-between items-center text-xs font-semibold text-custom-muted">
+                    <span>Subtotal:</span>
+                    <span id="cartSubtotal" class="text-white text-base font-bold">$0.00</span>
+                </div>
+                <button onclick="checkoutCart()" class="w-full bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-bag-shopping"></i> Proceder al Pago
+                </button>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-custom-card border border-[#86868B]/30 rounded-3xl shadow-xl p-8 relative">
+            <button onclick="closeAuthModal()" class="absolute top-6 right-6 w-8 h-8 rounded-xl bg-custom-subtle border border-[#86868B]/30 text-custom-muted hover:text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-10 h-10 rounded-xl bg-custom-subtle border border-[#86868B]/30 text-custom-accent flex items-center justify-center mx-auto mb-3 text-base">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+                <h3 class="text-base font-bold text-white" id="authModalTitle">Iniciar Sesión</h3>
+                <p class="text-[11px] text-custom-muted mt-0.5">Gestiona tus pedidos y listas guardadas.</p>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="nameFieldContainer" class="hidden space-y-1">
+                    <label class="text-[11px] font-semibold text-custom-muted">Nombre completo</label>
+                    <input type="text" id="authName" placeholder="Tu nombre" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-custom-muted">Correo electrónico</label>
+                    <input type="email" id="authEmail" required placeholder="correo@ejemplo.com" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-custom-muted">Contraseña</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                </div>
+                <button type="submit" id="authSubmitBtn" class="w-full bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold py-3 rounded-xl shadow-xs transition-all text-xs mt-2">
+                    Iniciar Sesión
+                </button>
+            </form>
+            <div class="text-center mt-5">
+                <p class="text-xs text-custom-muted" id="authToggleText">¿No tienes cuenta? <button type="button" onclick="toggleAuthMode()" class="text-white font-semibold hover:underline">Regístrate</button></p>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-custom-card border border-[#86868B]/30 text-white px-5 py-3.5 rounded-2xl shadow-lg flex items-center gap-3">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-custom-accent text-base"></i>
+        <span id="toastMessage" class="text-xs font-semibold">Producto añadido al carrito</span>
+    </div>
+ 
+    <!-- FOOTER -->
+    <footer class="bg-custom-bg text-custom-muted py-10 border-t border-[#86868B]/20 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-custom-card border border-[#86868B]/30 flex items-center justify-center text-custom-accent text-xs">
+                        <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <span class="text-sm font-bold text-white">MaDaTec</span>
+                </div>
+                <p class="text-xs text-custom-muted">Plataforma centralizada de hardware, repuestos y accesorios para equipos de cómputo.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-xs mb-3">Categorías</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#catalogSection" onclick="filterCategory('Componentes')" class="hover:text-white transition-colors">Componentes PC</a></li>
+                    <li><a href="#catalogSection" onclick="filterCategory('Repuestos')" class="hover:text-white transition-colors">Repuestos & Baterías</a></li>
+                    <li><a href="#catalogSection" onclick="filterCategory('Accesorios')" class="hover:text-white transition-colors">Accesorios & Fundas</a></li>
+                    <li><a href="#catalogSection" onclick="filterCategory('Periféricos')" class="hover:text-white transition-colors">Periféricos</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-xs mb-3">Proyecto</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><button onclick="switchView('valueProp')" class="hover:text-white transition-colors text-left">Modelo de Negocio</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-xs mb-3">Soporte</h4>
+                <p class="text-xs text-custom-muted mb-2">Asesoría en compatibilidad de componentes.</p>
+                <div class="flex items-center gap-2 text-xs text-white bg-custom-card border border-[#86868B]/30 p-2.5 rounded-xl shadow-xs">
+                    <i class="fa-solid fa-headset text-custom-accent"></i>
+                    <span>Soporte en línea activo</span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-[#86868B]/20 text-center text-xs text-custom-muted">
+            &copy; 2026 MaDaTec. Todos los derechos reservados.
+        </div>
+    </footer>
+ 
+    <!-- Script JS -->
+    <script src="script.js"></script>
+</body>
+</html>
+ 

@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: madatech-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: madatech
+      MYSQL_USER: madatech
+      MYSQL_PASSWORD: madatech1234
+      TZ: America/Mexico_City
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - madatech_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+
+  adminer:
+    image: adminer
+    container_name: madatech-adminer
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  madatech_data:
