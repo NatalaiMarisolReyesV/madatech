@@ -59,4 +59,9 @@ app.get('/api/productos', async (req, res) => {
   }
 });
 
+// Usuarios (registro, login, perfil) -> backend/auth.js
+require('./auth').configurarAuth(app, pool);
+// Compras (crear pedido, historial) -> backend/pedidos.js
+require('./pedidos').configurarPedidos(app, pool);
+
 app.listen(3000, () => console.log('API lista en http://localhost:3000'));
