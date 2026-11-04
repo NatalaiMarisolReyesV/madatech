@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MaDaTec - Hardware y Accesorios para Computadoras</title>
+    <!-- Icono de la pestaña -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="theme-color" content="#131313">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -59,6 +62,8 @@
             <div class="flex items-center gap-2 sm:gap-4">
                 <button onclick="switchView('store')" class="hidden sm:inline-flex text-xs font-semibold text-custom-muted hover:text-white px-3 py-2 rounded-lg transition-colors">TIENDA</button>
                 <button onclick="switchView('valueProp')" class="hidden sm:inline-flex text-xs font-semibold text-custom-muted hover:text-white px-3 py-2 rounded-lg transition-colors">MODELO DE NEGOCIO</button>
+                <!-- FASE 3a: solo se muestra con sesion iniciada (lo controla script.js) -->
+                <button id="orderHistoryBtn" style="display:none" onclick="switchView('orders')" class="hidden sm:inline-flex text-xs font-semibold text-custom-muted hover:text-white px-3 py-2 rounded-lg transition-colors">MIS COMPRAS</button>
                 
                 <button onclick="toggleCartModal(true)" class="relative p-2.5 rounded-xl bg-custom-card hover:bg-custom-subtle text-white transition-all flex items-center justify-center border border-[#86868B]/30 shadow-xs">
                     <i class="fa-solid fa-cart-shopping text-sm"></i>
@@ -199,6 +204,19 @@
             </button>
             <div id="productDetailContent" class="bg-custom-card rounded-3xl border border-[#86868B]/30 shadow-xs p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
         </div>
+
+        <!-- VIEW: MIS COMPRAS (Fase 3a) -->
+        <div id="ordersView" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <button onclick="switchView('store')" class="inline-flex items-center gap-2 text-xs font-semibold text-custom-muted hover:text-white mb-6 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
+            </button>
+            <div class="mb-6">
+                <span class="text-custom-muted text-xs uppercase tracking-wider font-semibold">TU CUENTA</span>
+                <h1 class="text-2xl font-bold text-white mt-1">Historial de compras</h1>
+                <p class="text-xs text-custom-muted mt-2">Compras de demostración: no se realizan cobros reales.</p>
+            </div>
+            <div id="ordersList" class="space-y-5"></div>
+        </div>
     </main>
  
     <!-- CART MODAL -->
@@ -239,7 +257,7 @@
                 <h3 class="text-base font-bold text-white" id="authModalTitle">Iniciar Sesión</h3>
                 <p class="text-[11px] text-custom-muted mt-0.5">Gestiona tus pedidos y listas guardadas.</p>
             </div>
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="nameFieldContainer" class="hidden space-y-1">
                     <label class="text-[11px] font-semibold text-custom-muted">Nombre completo</label>
                     <input type="text" id="authName" placeholder="Tu nombre" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
@@ -251,12 +269,41 @@
                 <div class="space-y-1">
                     <label class="text-[11px] font-semibold text-custom-muted">Contraseña</label>
                     <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                    <div id="forgotLinkBox" class="hidden pt-1">
+                        <p class="text-[11px] text-red-400 mb-1">Correo o contraseña incorrectos.</p>
+                        <button type="button" onclick="abrirRecuperacion()" class="text-[11px] text-custom-accent font-semibold hover:underline">¿Olvidaste tu contraseña? Recupérala aquí</button>
+                    </div>
                 </div>
                 <button type="submit" id="authSubmitBtn" class="w-full bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold py-3 rounded-xl shadow-xs transition-all text-xs mt-2">
                     Iniciar Sesión
                 </button>
             </form>
-            <div class="text-center mt-5">
+            <!-- Recuperar contraseña -->
+            <div id="recoverPanel" class="hidden space-y-4">
+                <div class="text-center">
+                    <h3 class="text-base font-bold text-white">Recuperar contraseña</h3>
+                    <p id="recoverHint" class="text-[11px] text-custom-muted mt-0.5">Escribe tu correo y te daremos un código de 6 dígitos.</p>
+                </div>
+                <form id="recoverStep1" onsubmit="solicitarCodigo(event)" class="space-y-3">
+                    <input type="email" id="recoverEmail" required placeholder="correo@ejemplo.com" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                    <button type="submit" id="recoverBtn1" class="w-full bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold py-3 rounded-xl text-xs">Enviar código</button>
+                </form>
+                <form id="recoverStep2" onsubmit="restablecerContrasena(event)" class="hidden space-y-3">
+                    <div id="recoverDemoBox" class="hidden bg-custom-subtle border border-[#86868B]/30 rounded-xl p-3 text-[11px] text-custom-muted">
+                        Modo demostración (no hay servicio de correo). Tu código es:
+                        <span id="recoverDemoCode" class="block text-lg font-bold text-white tracking-widest mt-1"></span>
+                    </div>
+                    <input type="text" id="recoverCode" inputmode="numeric" maxlength="6" required placeholder="Código de 6 dígitos" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                    <input type="password" id="recoverNewPass" required minlength="6" placeholder="Nueva contraseña (mín. 6 caracteres)" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                    <input type="password" id="recoverNewPass2" required minlength="6" placeholder="Repite la nueva contraseña" class="w-full px-4 py-2.5 bg-custom-subtle border border-[#86868B]/30 rounded-xl text-xs text-white focus:outline-none focus:border-custom-accent">
+                    <button type="submit" id="recoverBtn2" class="w-full bg-custom-accent hover:bg-blue-600 text-white border border-custom-accent font-semibold py-3 rounded-xl text-xs">Cambiar contraseña</button>
+                </form>
+                <div class="text-center">
+                    <button type="button" onclick="cerrarRecuperacion()" class="text-xs text-white font-semibold hover:underline">← Volver a iniciar sesión</button>
+                </div>
+            </div>
+
+            <div class="text-center mt-5" id="authFooter">
                 <p class="text-xs text-custom-muted" id="authToggleText">¿No tienes cuenta? <button type="button" onclick="toggleAuthMode()" class="text-white font-semibold hover:underline">Regístrate</button></p>
             </div>
         </div>
@@ -313,4 +360,3 @@
     <script src="script.js"></script>
 </body>
 </html>
- 
